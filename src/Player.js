@@ -1,16 +1,16 @@
+import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import model from './assets/sphere.glb';
 
 export default class Player {
-  constructor(scene) {
+  constructor(scene, fireMissile) {
     const loader = new GLTFLoader();
 
     loader.load(
       model,
       gltf => {
         this._mesh = gltf.scene;
-        this._mesh.position.z = 7;
         scene.add(this._mesh);
       },
       undefined,
@@ -20,6 +20,15 @@ export default class Player {
     );
 
     this._initInput();
+
+    this._lastFire = 0;
+    this._fireMissile = function () {
+      const position = this._mesh.position;
+      const target = new Vector3(position.x, position.y + 1, position.z);
+      fireMissile(position, target);
+    };
+
+    this._speed = 1.5;
   }
 
   _initInput() {
@@ -28,6 +37,7 @@ export default class Player {
       right: false,
       forward: false,
       backward: false,
+      space: false,
     };
 
     document.addEventListener('keydown', e => {
@@ -52,6 +62,9 @@ export default class Player {
       case 39:
         this._keys.right = true;
         break;
+      case 32:
+        this._keys.space = true;
+        break;
     }
   }
 
@@ -69,13 +82,21 @@ export default class Player {
       case 39:
         this._keys.right = false;
         break;
+      case 32:
+        this._keys.space = false;
+        break;
     }
   }
 
-  update(time) {
-    if (this._keys.forward) this._mesh.position.y += time;
-    if (this._keys.backward) this._mesh.position.y -= time;
-    if (this._keys.right) this._mesh.position.x += time;
-    if (this._keys.left) this._mesh.position.x -= time;
+  update(time, timeElapsed) {
+    if (this._keys.forward) this._mesh.position.y += this._speed * timeElapsed;
+    if (this._keys.backward) this._mesh.position.y -= this._speed * timeElapsed;
+    if (this._keys.right) this._mesh.position.x += this._speed * timeElapsed;
+    if (this._keys.left) this._mesh.position.x -= this._speed * timeElapsed;
+
+    if (this._keys.space && time > this._lastFire + 1000) {
+      this._fireMissile();
+      this._lastFire = time;
+    }
   }
 }

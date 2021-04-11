@@ -10,6 +10,7 @@ import {
 } from 'three';
 
 import Player from './Player';
+import Missile from './Missile';
 
 export default class Game {
   constructor() {
@@ -22,14 +23,15 @@ export default class Game {
       0.1,
       1000
     );
-    this._camera.position.z = 20;
-    this._camera.position.y = -10;
-    this._camera.lookAt(0, 10, 0);
+    this._camera.position.z = 15;
+    this._camera.position.y = -15;
+    this._camera.lookAt(0, 30, 0);
 
     const ground = new Mesh(
       new PlaneGeometry(100, 100, 1, 1),
       new MeshStandardMaterial({ color: 0xffffff })
     );
+    ground.position.z = -20;
     this._scene.add(ground);
 
     let light = new AmbientLight(0x444444);
@@ -42,7 +44,8 @@ export default class Game {
     this._renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this._renderer.domElement);
 
-    this._player = new Player(this._scene);
+    this._player = new Player(this._scene, this._fireMissile.bind(this));
+    this._missiles = [];
 
     window.addEventListener(
       'resize',
@@ -66,10 +69,19 @@ export default class Game {
       const time = (t - this._lastTime) / 1000;
       this._lastTime = t;
 
-      this._player.update(time);
+      this._update(t, time);
 
       this._renderer.render(this._scene, this._camera);
       this._animate();
     });
+  }
+
+  _update(time, timeElapsed) {
+    this._player.update(time, timeElapsed);
+    for (const missile of this._missiles) missile.update(time, timeElapsed);
+  }
+
+  _fireMissile(position, target) {
+    this._missiles.push(new Missile(this._scene, position, target));
   }
 }
