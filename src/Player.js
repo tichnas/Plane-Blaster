@@ -99,4 +99,12 @@ export default class Player {
       this._lastFire = time;
     }
   }
+
+  handleScope(minX, maxX, minY, maxY) {
+    if (!this._mesh) return;
+    this._mesh.position.x = Math.min(this._mesh.position.x, maxX);
+    this._mesh.position.x = Math.max(this._mesh.position.x, minX);
+    this._mesh.position.y = Math.min(this._mesh.position.y, maxY);
+    this._mesh.position.y = Math.max(this._mesh.position.y, minY);
+  }
 }

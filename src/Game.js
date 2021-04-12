@@ -11,46 +11,33 @@ import {
 
 import Player from './Player';
 import Missile from './Missile';
+import Star from './Star';
 
 export default class Game {
   constructor() {
     this._lastTime = 0;
     this._scene = new Scene();
 
-    const width = 100;
-    const height = 500;
+    this._width = 100;
+    this._length = 1000;
+    this._rangeLength = 100;
+    this._rangeWidth = 40;
 
     this._camera = new PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      2 * this._rangeLength
     );
     this._camera.position.z = 15;
     this._camera.position.y = -15;
     this._camera.lookAt(0, 30, 0);
 
     let plane = new Mesh(
-      new PlaneGeometry(width, height, 1, 1),
+      new PlaneGeometry(this._width, this._length, 1, 1),
       new MeshStandardMaterial({ color: 0xffffff })
     );
     plane.position.z = -20;
-    this._scene.add(plane);
-    plane = new Mesh(
-      new PlaneGeometry(width, height, 1, 1),
-      new MeshStandardMaterial({ color: 0xffffff })
-    );
-    plane.rotation.y = Math.PI / 2;
-    plane.position.z = -20 + height / 2;
-    plane.position.x = -width / 2;
-    this._scene.add(plane);
-    plane = new Mesh(
-      new PlaneGeometry(width, height, 1, 1),
-      new MeshStandardMaterial({ color: 0xffffff })
-    );
-    plane.rotation.y = -Math.PI / 2;
-    plane.position.z = -20 + height / 2;
-    plane.position.x = width / 2;
     this._scene.add(plane);
 
     let light = new AmbientLight(0x444444);
@@ -63,9 +50,6 @@ export default class Game {
     this._renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this._renderer.domElement);
 
-    this._player = new Player(this._scene, this._fireMissile.bind(this));
-    this._missiles = [];
-
     window.addEventListener(
       'resize',
       () => {
@@ -75,6 +59,8 @@ export default class Game {
     );
 
     this._animate();
+
+    this._generateLevel();
   }
 
   _onWindowResize() {
@@ -95,9 +81,58 @@ export default class Game {
     });
   }
 
+  _generateLevel() {
+    this._player = new Player(this._scene, this._fireMissile.bind(this));
+
+    this._missiles = [];
+
+    this._stars = [];
+    for (let i = 0; i < this._length; i += this._rangeLength) {
+      let noOfStars = Math.floor(Math.random() * 4) + 2;
+
+      while (noOfStars--) {
+        const x =
+          Math.floor(Math.random() * this._rangeWidth) - this._rangeWidth / 2;
+        const y = Math.floor(Math.random() * this._rangeLength) + 20;
+
+        this._stars.push(new Star(this._scene, x, y));
+      }
+    }
+  }
+
   _update(time, timeElapsed) {
+    this._camera.position.y += timeElapsed;
+
     this._player.update(time, timeElapsed);
-    for (const missile of this._missiles) missile.update(time, timeElapsed);
+    this._player.handleScope(
+      -this._rangeWidth / 2,
+      this._rangeWidth / 2,
+      this._camera.position.y + 15,
+      this._camera.position.y + 15 + this._rangeLength / 4
+    );
+
+    for (const missile of this._missiles) {
+      if (!missile.exists()) continue;
+
+      missile.update(time, timeElapsed);
+
+      if (
+        this._camera.position.distanceTo(missile.getPosition()) >
+        this._rangeLength
+      )
+        missile.remove();
+    }
+
+    for (const star of this._stars) {
+      if (!star.exists()) continue;
+
+      if (star.getPosition().y < this._camera.position.y) star.remove();
+      else if (
+        this._camera.position.distanceTo(star.getPosition()) <=
+        this._rangeLength
+      )
+        star.visible();
+    }
   }
 
   _fireMissile(position, target) {

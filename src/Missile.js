@@ -28,12 +28,20 @@ export default class Missile {
   }
 
   update(_, timeElapsed) {
-    if (this._mesh) {
-      this._mesh.position.add(
-        this._velocity.clone().multiplyScalar(timeElapsed)
-      );
-      this._velocity.z += 3 * timeElapsed;
-      if (this._mesh.position.z >= this._level) this._velocity.z = 0;
-    }
+    this._mesh.position.add(this._velocity.clone().multiplyScalar(timeElapsed));
+    this._velocity.z += 3 * timeElapsed;
+    if (this._mesh.position.z >= this._level) this._velocity.z = 0;
+  }
+
+  remove() {
+    this._mesh.visible = false;
+  }
+
+  getPosition() {
+    return this._mesh.position;
+  }
+
+  exists() {
+    return this._mesh && this._mesh.visible;
   }
 }
