@@ -1,10 +1,12 @@
 import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+import Object from './Object';
 import model from './assets/sphere.glb';
 
-export default class Player {
+export default class Player extends Object {
   constructor(scene, fireMissile) {
+    super();
     const loader = new GLTFLoader();
 
     loader.load(
@@ -28,7 +30,7 @@ export default class Player {
       fireMissile(position, target);
     };
 
-    this._speed = 1.5;
+    this._speed = 4;
   }
 
   _initInput() {
@@ -88,7 +90,9 @@ export default class Player {
     }
   }
 
-  update(time, timeElapsed) {
+  update(camera, time, timeElapsed) {
+    super.update(camera);
+
     if (this._keys.forward) this._mesh.position.y += this._speed * timeElapsed;
     if (this._keys.backward) this._mesh.position.y -= this._speed * timeElapsed;
     if (this._keys.right) this._mesh.position.x += this._speed * timeElapsed;

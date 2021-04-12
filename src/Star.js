@@ -1,9 +1,11 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+import Object from './Object';
 import model from './assets/sphere.glb';
 
-export default class Star {
+export default class Star extends Object {
   constructor(scene, x, y) {
+    super();
     const loader = new GLTFLoader();
 
     loader.load(
@@ -20,21 +22,5 @@ export default class Star {
         console.error(error);
       }
     );
-  }
-
-  remove() {
-    this._mesh.visible = false;
-  }
-
-  getPosition() {
-    return this._mesh.position;
-  }
-
-  exists() {
-    return this._mesh;
-  }
-
-  visible() {
-    this._mesh.visible = true;
   }
 }

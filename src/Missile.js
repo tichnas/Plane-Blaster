@@ -1,9 +1,11 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
+import Object from './Object';
 import model from './assets/sphere.glb';
 
-export default class Missile {
+export default class Missile extends Object {
   constructor(scene, position, target) {
+    super();
     const loader = new GLTFLoader();
 
     loader.load(
@@ -22,26 +24,17 @@ export default class Missile {
     this._velocity = target.clone();
     this._velocity.sub(position);
     this._velocity.normalize();
-    this._velocity.multiplyScalar(3);
-    this._velocity.z = -5;
+    this._velocity.multiplyScalar(10);
+    this._velocity.z = -10;
     this._level = position.z;
   }
 
-  update(_, timeElapsed) {
+  update(camera, _, timeElapsed) {
+    super.update(camera);
+
     this._mesh.position.add(this._velocity.clone().multiplyScalar(timeElapsed));
-    this._velocity.z += 3 * timeElapsed;
+    this._velocity.z += 30 * timeElapsed;
     if (this._mesh.position.z >= this._level) this._velocity.z = 0;
-  }
-
-  remove() {
-    this._mesh.visible = false;
-  }
-
-  getPosition() {
-    return this._mesh.position;
-  }
-
-  exists() {
-    return this._mesh && this._mesh.visible;
+    this._mesh.rotation.x = Math.atan(this._velocity.z / this._velocity.y);
   }
 }

@@ -101,9 +101,9 @@ export default class Game {
   }
 
   _update(time, timeElapsed) {
-    this._camera.position.y += timeElapsed;
+    this._camera.position.y += 2 * timeElapsed;
 
-    this._player.update(time, timeElapsed);
+    this._player.update(this._camera, time, timeElapsed);
     this._player.handleScope(
       -this._rangeWidth / 2,
       this._rangeWidth / 2,
@@ -112,26 +112,32 @@ export default class Game {
     );
 
     for (const missile of this._missiles) {
-      if (!missile.exists()) continue;
+      if (!missile.isVisible()) continue;
 
-      missile.update(time, timeElapsed);
+      missile.update(this._camera, time, timeElapsed);
 
       if (
         this._camera.position.distanceTo(missile.getPosition()) >
         this._rangeLength
       )
-        missile.remove();
+        missile.destroy();
     }
 
     for (const star of this._stars) {
-      if (!star.exists()) continue;
+      star.update(this._camera);
+    }
 
-      if (star.getPosition().y < this._camera.position.y) star.remove();
-      else if (
-        this._camera.position.distanceTo(star.getPosition()) <=
-        this._rangeLength
-      )
-        star.visible();
+    this._checkCollisions();
+  }
+
+  _checkCollisions() {
+    for (const star of this._stars) {
+      if (!star.isVisible()) continue;
+
+      if (this._player.intersects(star)) {
+        console.log('star');
+        star.destroy();
+      }
     }
   }
 
