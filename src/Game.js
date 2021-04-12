@@ -17,6 +17,9 @@ export default class Game {
     this._lastTime = 0;
     this._scene = new Scene();
 
+    const width = 100;
+    const height = 500;
+
     this._camera = new PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -27,12 +30,28 @@ export default class Game {
     this._camera.position.y = -15;
     this._camera.lookAt(0, 30, 0);
 
-    const ground = new Mesh(
-      new PlaneGeometry(100, 100, 1, 1),
+    let plane = new Mesh(
+      new PlaneGeometry(width, height, 1, 1),
       new MeshStandardMaterial({ color: 0xffffff })
     );
-    ground.position.z = -20;
-    this._scene.add(ground);
+    plane.position.z = -20;
+    this._scene.add(plane);
+    plane = new Mesh(
+      new PlaneGeometry(width, height, 1, 1),
+      new MeshStandardMaterial({ color: 0xffffff })
+    );
+    plane.rotation.y = Math.PI / 2;
+    plane.position.z = -20 + height / 2;
+    plane.position.x = -width / 2;
+    this._scene.add(plane);
+    plane = new Mesh(
+      new PlaneGeometry(width, height, 1, 1),
+      new MeshStandardMaterial({ color: 0xffffff })
+    );
+    plane.rotation.y = -Math.PI / 2;
+    plane.position.z = -20 + height / 2;
+    plane.position.x = width / 2;
+    this._scene.add(plane);
 
     let light = new AmbientLight(0x444444);
     this._scene.add(light);
