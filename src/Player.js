@@ -26,7 +26,9 @@ export default class Player extends Object {
     this._lastFire = 0;
     this._fireMissile = function () {
       const position = this._mesh.position;
-      const target = new Vector3(position.x, position.y + 1, position.z);
+      const front = new Vector3(0, 1, 0);
+      front.applyAxisAngle(new Vector3(0, 0, 1), this._mesh.rotation.z);
+      const target = front.add(position);
       fireMissile(position, target);
     };
 
@@ -40,6 +42,9 @@ export default class Player extends Object {
       forward: false,
       backward: false,
       space: false,
+      rotateLeft: false,
+      rotateRight: false,
+      resetRotate: false,
     };
 
     document.addEventListener('keydown', e => {
@@ -67,6 +72,15 @@ export default class Player extends Object {
       case 32:
         this._keys.space = true;
         break;
+      case 65:
+        this._keys.rotateLeft = true;
+        break;
+      case 68:
+        this._keys.rotateRight = true;
+        break;
+      case 83:
+        this._keys.resetRotate = true;
+        break;
     }
   }
 
@@ -87,16 +101,39 @@ export default class Player extends Object {
       case 32:
         this._keys.space = false;
         break;
+      case 65:
+        this._keys.rotateLeft = false;
+        break;
+      case 68:
+        this._keys.rotateRight = false;
+        break;
+      case 83:
+        this._keys.resetRotate = false;
+        break;
     }
   }
 
   update(camera, time, timeElapsed) {
     super.update(camera);
 
-    if (this._keys.forward) this._mesh.position.y += this._speed * timeElapsed;
-    if (this._keys.backward) this._mesh.position.y -= this._speed * timeElapsed;
-    if (this._keys.right) this._mesh.position.x += this._speed * timeElapsed;
-    if (this._keys.left) this._mesh.position.x -= this._speed * timeElapsed;
+    if (!this._mesh) return;
+
+    const axis = new Vector3(0, 0, 1);
+    const front = new Vector3(0, this._speed * timeElapsed, 0);
+    front.applyAxisAngle(axis, this._mesh.rotation.z);
+    const right = front.clone().applyAxisAngle(axis, -Math.PI / 2);
+    const back = front.clone().negate();
+    const left = right.clone().negate();
+
+    if (this._keys.forward) this._mesh.position.add(front);
+    if (this._keys.backward) this._mesh.position.add(back);
+    if (this._keys.left) this._mesh.position.add(left);
+    if (this._keys.right) this._mesh.position.add(right);
+    if (this._keys.rotateLeft)
+      this._mesh.rotation.z += (this._speed * timeElapsed) / 2;
+    if (this._keys.rotateRight)
+      this._mesh.rotation.z -= (this._speed * timeElapsed) / 2;
+    if (this._keys.resetRotate) this._mesh.rotation.z = 0;
 
     if (this._keys.space && time > this._lastFire + 1000) {
       this._fireMissile();
