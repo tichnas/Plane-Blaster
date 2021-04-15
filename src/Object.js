@@ -7,6 +7,8 @@ export default class Object {
   }
 
   intersects(obj) {
+    if (!obj.isVisible() || !this.isVisible()) return false;
+
     return this.collider.intersectsBox(obj.collider);
   }
 

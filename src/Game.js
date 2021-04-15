@@ -150,11 +150,25 @@ export default class Game {
 
   _checkCollisions() {
     for (const star of this._stars) {
-      if (!star.isVisible()) continue;
-
       if (this._player.intersects(star)) {
         console.log('star');
         star.destroy();
+      }
+    }
+
+    for (const enemy of this._enemies) {
+      if (this._player.intersects(enemy)) {
+        console.log('enemy');
+        enemy.destroy();
+      }
+    }
+
+    for (const missile of this._missiles) {
+      for (const enemy of this._enemies) {
+        if (missile.intersects(enemy)) {
+          enemy.destroy();
+          missile.destroy();
+        }
       }
     }
   }
