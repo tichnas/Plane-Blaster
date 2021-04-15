@@ -109,7 +109,15 @@ export default class Game {
           Math.floor(Math.random() * this._rangeWidth) - this._rangeWidth / 2;
         const y = Math.floor(Math.random() * this._rangeLength) + 20;
 
-        this._enemies.push(new Enemy(this._scene, x, y, this._player));
+        this._enemies.push(
+          new Enemy(
+            this._scene,
+            x,
+            y,
+            this._player,
+            this._fireMissile.bind(this)
+          )
+        );
       }
     }
   }
@@ -158,7 +166,7 @@ export default class Game {
 
     for (const enemy of this._enemies) {
       if (this._player.intersects(enemy)) {
-        console.log('enemy');
+        console.log('enemy killed player');
         enemy.destroy();
       }
     }
@@ -170,10 +178,22 @@ export default class Game {
           missile.destroy();
         }
       }
+      if (missile.intersects(this._player)) {
+        console.log('missile killed player');
+      }
     }
   }
 
-  _fireMissile(position, target) {
-    this._missiles.push(new Missile(this._scene, position, target));
+  _fireMissile(source, target) {
+    const position = source.getPosition().clone();
+    const tar = target.clone();
+    const direction = tar.clone().sub(position).normalize().multiplyScalar(1.1);
+    position.x += direction.x * source.getSize().x;
+    position.y += direction.y * source.getSize().y;
+    position.z += direction.z * source.getSize().z;
+    tar.x += direction.x * source.getSize().x;
+    tar.y += direction.y * source.getSize().y;
+    tar.z += direction.z * source.getSize().z;
+    this._missiles.push(new Missile(this._scene, position, tar));
   }
 }

@@ -39,10 +39,18 @@ export default class Object {
     return this._mesh.position;
   }
 
+  getRotation() {
+    return this._mesh.rotation;
+  }
+
   activate() {
     if (this._activated) return;
 
     this._activated = true;
     this._mesh.visible = true;
+  }
+
+  getSize() {
+    return this.collider.getSize();
   }
 }

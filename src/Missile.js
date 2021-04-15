@@ -21,20 +21,15 @@ export default class Missile extends Object {
       }
     );
 
-    this._velocity = target.clone();
+    this._velocity = target;
     this._velocity.sub(position);
     this._velocity.normalize();
-    this._velocity.multiplyScalar(10);
-    this._velocity.z = -10;
-    this._level = position.z;
+    this._velocity.multiplyScalar(15);
   }
 
   update(camera, _, timeElapsed) {
     super.update(camera);
 
     this._mesh.position.add(this._velocity.clone().multiplyScalar(timeElapsed));
-    this._velocity.z += 30 * timeElapsed;
-    if (this._mesh.position.z >= this._level) this._velocity.z = 0;
-    this._mesh.rotation.x = Math.atan(this._velocity.z / this._velocity.y);
   }
 }

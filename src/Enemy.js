@@ -4,7 +4,7 @@ import Object from './Object';
 import model from './assets/sphere.glb';
 
 export default class Enemy extends Object {
-  constructor(scene, x, y, target) {
+  constructor(scene, x, y, target, fireMissile) {
     super();
     const loader = new GLTFLoader();
 
@@ -24,12 +24,16 @@ export default class Enemy extends Object {
 
     this._speed = 4;
     this._target = target;
+    this._fireMissile = fireMissile;
   }
 
   update(camera, _, timeElapsed) {
     super.update(camera);
 
     if (!this.isVisible()) return;
+
+    if (Math.random() < timeElapsed / 33)
+      this._fireMissile(this, this._target.getPosition());
 
     const velocity = this._target
       .getPosition()

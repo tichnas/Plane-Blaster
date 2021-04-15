@@ -25,11 +25,10 @@ export default class Player extends Object {
 
     this._lastFire = 0;
     this._fireMissile = function () {
-      const position = this._mesh.position;
       const front = new Vector3(0, 1, 0);
       front.applyAxisAngle(new Vector3(0, 0, 1), this._mesh.rotation.z);
-      const target = front.add(position);
-      fireMissile(position, target);
+      const target = front.add(this._mesh.position);
+      fireMissile(this, target);
     };
 
     this._speed = 10;
@@ -135,7 +134,7 @@ export default class Player extends Object {
       this._mesh.rotation.z -= (this._speed * timeElapsed) / 2;
     if (this._keys.resetRotate) this._mesh.rotation.z = 0;
 
-    if (this._keys.space && time > this._lastFire + 1000) {
+    if (this._keys.space && time > this._lastFire + 500) {
       this._fireMissile();
       this._lastFire = time;
     }
