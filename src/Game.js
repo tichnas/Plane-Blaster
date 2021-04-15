@@ -12,6 +12,7 @@ import {
 import Player from './Player';
 import Missile from './Missile';
 import Star from './Star';
+import Enemy from './Enemy';
 
 export default class Game {
   constructor() {
@@ -98,6 +99,19 @@ export default class Game {
         this._stars.push(new Star(this._scene, x, y));
       }
     }
+
+    this._enemies = [];
+    for (let i = 0; i < this._length; i += this._rangeLength) {
+      let noOfEnemies = Math.floor(Math.random() * 4);
+
+      while (noOfEnemies--) {
+        const x =
+          Math.floor(Math.random() * this._rangeWidth) - this._rangeWidth / 2;
+        const y = Math.floor(Math.random() * this._rangeLength) + 20;
+
+        this._enemies.push(new Enemy(this._scene, x, y, this._player));
+      }
+    }
   }
 
   _update(time, timeElapsed) {
@@ -125,6 +139,10 @@ export default class Game {
 
     for (const star of this._stars) {
       star.update(this._camera);
+    }
+
+    for (const enemy of this._enemies) {
+      enemy.update(this._camera, time, timeElapsed);
     }
 
     this._checkCollisions();

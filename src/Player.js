@@ -32,7 +32,7 @@ export default class Player extends Object {
       fireMissile(position, target);
     };
 
-    this._speed = 4;
+    this._speed = 10;
   }
 
   _initInput() {
