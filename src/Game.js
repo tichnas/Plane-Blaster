@@ -59,6 +59,9 @@ export default class Game {
       false
     );
 
+    this._score = 0;
+    this._health = 5;
+
     this._animate();
 
     this._generateLevel();
@@ -83,6 +86,8 @@ export default class Game {
   }
 
   _generateLevel() {
+    this._updateText();
+
     this._player = new Player(this._scene, this._fireMissile.bind(this));
 
     this._missiles = [];
@@ -160,6 +165,7 @@ export default class Game {
     for (const star of this._stars) {
       if (this._player.intersects(star)) {
         console.log('star');
+        this._increaseScore();
         star.destroy();
       }
     }
@@ -168,6 +174,7 @@ export default class Game {
       if (this._player.intersects(enemy)) {
         console.log('enemy killed player');
         enemy.destroy();
+        this._hitPlayer();
       }
     }
 
@@ -179,6 +186,7 @@ export default class Game {
         }
       }
       if (missile.intersects(this._player)) {
+        this._hitPlayer();
         console.log('missile killed player');
       }
     }
@@ -195,5 +203,31 @@ export default class Game {
     tar.y += direction.y * source.getSize().y;
     tar.z += direction.z * source.getSize().z;
     this._missiles.push(new Missile(this._scene, position, tar));
+  }
+
+  _hitPlayer() {
+    this._health -= 1;
+    if (this._health == 0) this._gameOver();
+    else this._updateText();
+  }
+
+  _increaseScore() {
+    this._score += 5;
+    this._updateText();
+  }
+
+  _updateText() {
+    document.getElementById('text__score').innerText = 'Score: ' + this._score;
+    document.getElementById('text__health').innerText =
+      'Health: ' + this._health;
+  }
+
+  _gameOver() {
+    document.body.innerHTML = `
+    <div class="game-over">
+      <p>Game Over</p>
+      <p>Score: ${this._score}</p>
+    </div>
+    `;
   }
 }
