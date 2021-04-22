@@ -39,6 +39,7 @@ export default class Game {
       new MeshStandardMaterial({ color: 0xffffff })
     );
     plane.position.z = -20;
+    plane.position.y = this._length / 2;
     this._scene.add(plane);
 
     let light = new AmbientLight(0x444444);
@@ -99,7 +100,7 @@ export default class Game {
       while (noOfStars--) {
         const x =
           Math.floor(Math.random() * this._rangeWidth) - this._rangeWidth / 2;
-        const y = Math.floor(Math.random() * this._rangeLength) + 20;
+        const y = i + Math.floor(Math.random() * this._rangeLength) + 20;
 
         this._stars.push(new Star(this._scene, x, y));
       }
@@ -112,7 +113,7 @@ export default class Game {
       while (noOfEnemies--) {
         const x =
           Math.floor(Math.random() * this._rangeWidth) - this._rangeWidth / 2;
-        const y = Math.floor(Math.random() * this._rangeLength) + 20;
+        const y = i + Math.floor(Math.random() * this._rangeLength) + 20;
 
         this._enemies.push(
           new Enemy(
@@ -159,6 +160,21 @@ export default class Game {
     }
 
     this._checkCollisions();
+    this._checkWin();
+  }
+
+  _checkWin() {
+    if (!this._player.isVisible()) return;
+
+    console.log(this._player.getPosition().y);
+    if (this._player.getPosition().y > this._length - 50) {
+      document.body.innerHTML = `
+      <div class="game-over">
+        <p>You Won!</p>
+        <p>Score: ${this._score}</p>
+      </div>
+      `;
+    }
   }
 
   _checkCollisions() {
