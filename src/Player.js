@@ -2,7 +2,7 @@ import { Vector3 } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import Object from './Object';
-import model from './assets/sphere.glb';
+import model from './assets/player.glb';
 
 export default class Player extends Object {
   constructor(scene, fireMissile) {

@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import Object from './Object';
-import model from './assets/sphere.glb';
+import model from './assets/enemy.glb';
 
 export default class Enemy extends Object {
   constructor(scene, x, y, target, fireMissile) {
@@ -43,6 +43,6 @@ export default class Enemy extends Object {
       .multiplyScalar(this._speed * timeElapsed);
 
     this._mesh.position.add(velocity);
-    this._mesh.rotation.z = Math.atan(velocity.y / velocity.x);
+    this._mesh.rotation.z = Math.atan(-velocity.x / velocity.y);
   }
 }

@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import Object from './Object';
-import model from './assets/sphere.glb';
+import model from './assets/missile.glb';
 
 export default class Missile extends Object {
   constructor(scene, position, target) {
@@ -31,5 +31,6 @@ export default class Missile extends Object {
     super.update(camera);
 
     this._mesh.position.add(this._velocity.clone().multiplyScalar(timeElapsed));
+    this._mesh.rotation.z = Math.atan(-this._velocity.x / this._velocity.y);
   }
 }

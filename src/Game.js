@@ -187,6 +187,7 @@ export default class Game {
       }
       if (missile.intersects(this._player)) {
         this._hitPlayer();
+        missile.destroy();
         console.log('missile killed player');
       }
     }

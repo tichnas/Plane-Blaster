@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 import Object from './Object';
-import model from './assets/sphere.glb';
+import model from './assets/star.glb';
 
 export default class Star extends Object {
   constructor(scene, x, y) {
