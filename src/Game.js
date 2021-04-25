@@ -95,7 +95,7 @@ export default class Game {
 
     this._stars = [];
     for (let i = 0; i < this._length; i += this._rangeLength) {
-      let noOfStars = Math.floor(Math.random() * 4) + 2;
+      let noOfStars = Math.floor(Math.random() * 20) + 2;
 
       while (noOfStars--) {
         const x =
@@ -108,7 +108,7 @@ export default class Game {
 
     this._enemies = [];
     for (let i = 0; i < this._length; i += this._rangeLength) {
-      let noOfEnemies = Math.floor(Math.random() * 4);
+      let noOfEnemies = Math.floor(Math.random() * 15) + 2;
 
       while (noOfEnemies--) {
         const x =
