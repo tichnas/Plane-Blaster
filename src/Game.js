@@ -105,8 +105,8 @@ export default class Game {
     }
 
     this._enemies = [];
-    for (let i = 0; i < this._length; i += this._rangeLength) {
-      let noOfEnemies = Math.floor(Math.random() * 15) + 2;
+    for (let i = 20; i < this._length; i += this._rangeLength) {
+      let noOfEnemies = Math.floor(Math.random() * 15) + 5;
 
       while (noOfEnemies--) {
         const x =
@@ -195,6 +195,7 @@ export default class Game {
     for (const missile of this._missiles) {
       for (const enemy of this._enemies) {
         if (missile.intersects(enemy)) {
+          console.log('missile killed enemy');
           let enemyPosition = enemy.getPosition();
           this._stars.push(
             new Star(this._scene, enemyPosition.x, enemyPosition.y)

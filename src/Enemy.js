@@ -32,7 +32,7 @@ export default class Enemy extends Object {
 
     if (!this.isVisible()) return;
 
-    if (Math.random() < timeElapsed / 33)
+    if (Math.random() < timeElapsed / 5)
       this._fireMissile(this, this._target.getPosition());
 
     const velocity = this._target

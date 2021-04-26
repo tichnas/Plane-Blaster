@@ -134,7 +134,7 @@ export default class Player extends Object {
       this._mesh.rotation.z -= (this._speed * timeElapsed) / 2;
     if (this._keys.resetRotate) this._mesh.rotation.z = 0;
 
-    if (this._keys.space && time > this._lastFire + 500) {
+    if (this._keys.space && time > this._lastFire + 1000) {
       this._fireMissile();
       this._lastFire = time;
     }

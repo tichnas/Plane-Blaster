@@ -21,6 +21,11 @@ export default class Object {
     if (this.getPosition().y < camera.position.y) this.destroy();
     else if (camera.position.distanceTo(this.getPosition()) <= 100)
       this.activate();
+    else if (
+      this._activated &&
+      camera.position.distanceTo(this.getPosition()) >= 100
+    )
+      this.destroy();
   }
 
   exists() {
