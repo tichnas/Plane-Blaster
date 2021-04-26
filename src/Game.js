@@ -87,8 +87,6 @@ export default class Game {
   }
 
   _generateLevel() {
-    this._updateText();
-
     this._player = new Player(this._scene, this._fireMissile.bind(this));
 
     this._missiles = [];
@@ -130,6 +128,7 @@ export default class Game {
 
   _update(time, timeElapsed) {
     this._camera.position.y += 2 * timeElapsed;
+    this._updateText();
 
     this._player.update(this._camera, time, timeElapsed);
     this._player.handleScope(
@@ -166,7 +165,6 @@ export default class Game {
   _checkWin() {
     if (!this._player.isVisible()) return;
 
-    console.log(this._player.getPosition().y);
     if (this._player.getPosition().y > this._length - 50) {
       document.body.innerHTML = `
       <div class="game-over">
@@ -225,18 +223,23 @@ export default class Game {
   _hitPlayer() {
     this._health -= 1;
     if (this._health == 0) this._gameOver();
-    else this._updateText();
   }
 
   _increaseScore() {
     this._score += 5;
-    this._updateText();
   }
 
   _updateText() {
     document.getElementById('text__score').innerText = 'Score: ' + this._score;
     document.getElementById('text__health').innerText =
       'Health: ' + this._health;
+
+    if (this._player.isVisible())
+      document.getElementById(
+        'text__position'
+      ).innerText = `${this._player.getPosition().y.toFixed(0)}/${
+        this._length - 50
+      }`;
   }
 
   _gameOver() {
