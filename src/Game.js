@@ -195,6 +195,10 @@ export default class Game {
     for (const missile of this._missiles) {
       for (const enemy of this._enemies) {
         if (missile.intersects(enemy)) {
+          let enemyPosition = enemy.getPosition();
+          this._stars.push(
+            new Star(this._scene, enemyPosition.x, enemyPosition.y)
+          );
           enemy.destroy();
           missile.destroy();
         }
