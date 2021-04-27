@@ -6,6 +6,7 @@
     <style>
       body {
         margin: 0;
+        overflow: hidden;
       }
       .text {
         position: absolute;
@@ -19,6 +20,34 @@
       .game-over {
         text-align: center;
       }
+      .trailer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: red;
+        text-align: center;
+        font-size: 80px;
+        line-height: 1.75;
+        letter-spacing: 3px;
+        word-spacing: 15px;
+        margin: 0;
+      }
+      .trailer-animate {
+        animation: trailerText 4s;
+        animation-fill-mode: forwards;
+      }
+      @keyframes trailerText {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(10);
+        }
+      }
     </style>
   </head>
   <body>
@@ -27,5 +56,6 @@
       <p id="text__position"></p>
       <p id="text__health"></p>
     </div>
+    <p id="trailer" class="trailer"></p>
   </body>
 </html>
