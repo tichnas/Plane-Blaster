@@ -29,6 +29,13 @@ export default class Video {
     this._scene = new Scene();
     this._modelsLoaded = 0;
 
+    this._audio = {
+      bg: document.getElementById('audio-bg'),
+      fire: document.getElementById('audio-fire'),
+    };
+
+    this._audio.bg.volume = 0.05;
+
     this._camera = new PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -210,6 +217,8 @@ export default class Video {
     }
 
     // Missile from enemy to player
+    this._audio.fire.currentTime = 0;
+    this._audio.fire.play();
     this._missile.visible = true;
     this._missile.position.x = 0;
     this._missile.position.y = -42;
@@ -244,6 +253,8 @@ export default class Video {
     }
 
     // Player firing missile
+    this._audio.fire.currentTime = 0;
+    this._audio.fire.play();
     this._missile.position.y = 7;
     period = 100;
     for (let i = 1; i <= period; i++) {

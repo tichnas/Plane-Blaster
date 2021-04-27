@@ -24,6 +24,14 @@ export default class Game {
     this._rangeLength = 100;
     this._rangeWidth = 40;
 
+    this._audio = {
+      bg: document.getElementById('audio-bg'),
+      fire: document.getElementById('audio-fire'),
+      star: document.getElementById('audio-star'),
+    };
+
+    this._audio.bg.volume = 0.05;
+
     this._camera = new PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -181,6 +189,8 @@ export default class Game {
         console.log('star');
         this._increaseScore();
         star.destroy();
+        this._audio.star.currentTime = 0;
+        this._audio.star.play();
       }
     }
 
@@ -223,6 +233,8 @@ export default class Game {
     tar.y += direction.y * source.getSize().y;
     tar.z += direction.z * source.getSize().z;
     this._missiles.push(new Missile(this._scene, position, tar));
+    this._audio.fire.currentTime = 0;
+    this._audio.fire.play();
   }
 
   _hitPlayer() {
